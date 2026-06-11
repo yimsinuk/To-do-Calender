@@ -322,8 +322,8 @@ function renderMonth(){
 
 function selectDay(ds){
   S.selectedDate = S.selectedDate===ds ? null : ds;
+  S.expandedTask={};
   render();
-  // 패널이 열리면 스크롤
   if(S.selectedDate){
     setTimeout(()=>{
       const panel=document.querySelector('.day-panel');
@@ -336,6 +336,7 @@ function renderDayPanel(ds){
   const d=new Date(ds+' 00:00:00');
   const label=`${d.getMonth()+1}월 ${d.getDate()}일 (${DAY_NAMES[d.getDay()]})`;
   const tasks=getAllTasks(ds);
+  const expanded=S.expandedTask||{};
   const grouped={};const urgents=[];const others=[];
   tasks.forEach((t,idx)=>{
     if(t.type==='urgent'){urgents.push({t,idx});return;}
@@ -343,20 +344,36 @@ function renderDayPanel(ds){
     if(m2)for(const cat of Object.keys(CAT_COLORS)){if(m2[1].includes(cat)){if(!grouped[cat])grouped[cat]=[];grouped[cat].push({t,idx});done=true;break;}}
     if(!done)others.push({t,idx});
   });
+
+  function taskCard(t, idx, badgeHtml){
+    const thumb=t.thumbnail||t.text||'';
+    const isOpen=!!expanded[ds+'_'+idx];
+    const hasContent=t.text&&t.text!==thumb;
+    return`<div class="task-row" style="flex-direction:column;align-items:stretch;gap:0;padding:0;overflow:hidden;">
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;cursor:${hasContent?'pointer':'default'}" onclick="${hasContent?`toggleTaskExpand('${ds}',${idx})`:''}">
+        ${badgeHtml}
+        <span class="ttext" style="${t.type==='urgent'?'font-weight:600':''}flex:1">${thumb}</span>
+        ${hasContent?`<i class="ti ti-chevron-${isOpen?'up':'down'}" style="font-size:13px;color:var(--text3);flex-shrink:0"></i>`:''}
+        <button class="tdel" onclick="event.stopPropagation();deleteTask('${ds}',${idx})" style="margin-left:${hasContent?'0':'auto'}"><i class="ti ti-trash"></i></button>
+      </div>
+      ${isOpen&&hasContent?`<div style="padding:0 10px 10px 10px;font-size:12px;color:var(--text2);line-height:1.6;border-top:0.5px solid var(--border);background:var(--bg2)">${t.text.replace(/\n/g,'<br>')}</div>`:''}
+    </div>`;
+  }
+
   let body='';
   if(urgents.length){
     body+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:#E24B4A"></div>마감 / 중요</div>`;
-    urgents.forEach(({t,idx})=>body+=`<div class="task-row"><span class="tbadge" style="background:#FCEBEB;color:#791F1F">★ 마감</span><span class="ttext" style="font-weight:600">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})"><i class="ti ti-trash"></i></button></div>`);
+    urgents.forEach(({t,idx})=>body+=taskCard(t,idx,`<span class="tbadge" style="background:#FCEBEB;color:#791F1F">★ 마감</span>`));
     body+=`</div>`;
   }
   Object.entries(grouped).forEach(([cat,items])=>{
     body+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:${CAT_COLORS[cat]}"></div>${cat}</div>`;
-    items.forEach(({t,idx})=>body+=`<div class="task-row"><span class="tbadge" style="background:${CAT_BG[cat]};color:${CAT_FG[cat]}">${cat}</span><span class="ttext">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})"><i class="ti ti-trash"></i></button></div>`);
+    items.forEach(({t,idx})=>body+=taskCard(t,idx,`<span class="tbadge" style="background:${CAT_BG[cat]};color:${CAT_FG[cat]}">${cat}</span>`));
     body+=`</div>`;
   });
   if(others.length){
     body+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:#888780"></div>기타</div>`;
-    others.forEach(({t,idx})=>body+=`<div class="task-row"><span class="ttext">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})"><i class="ti ti-trash"></i></button></div>`);
+    others.forEach(({t,idx})=>body+=taskCard(t,idx,''));
     body+=`</div>`;
   }
   if(!tasks.length) body+=`<div style="text-align:center;padding:20px 0;font-size:13px;color:var(--text3)">등록된 업무가 없어요</div>`;
@@ -370,6 +387,14 @@ function renderDayPanel(ds){
       <button class="go-week-btn" style="margin-top:0" onclick="goToWeekOf('${ds}')"><i class="ti ti-calendar-week"></i> 주별 상세 보기 / 업무 추가</button>
     </div>
   </div>`;
+}
+
+function toggleTaskExpand(ds,idx){
+  if(!S.expandedTask) S.expandedTask={};
+  const key=ds+'_'+idx;
+  S.expandedTask[key]=!S.expandedTask[key];
+  render();
+  setTimeout(()=>{const p=document.querySelector('.day-panel');if(p)p.scrollIntoView({behavior:'smooth',block:'nearest'});},50);
 }
 
 function openDayDetail(ds){selectDay(ds);}
@@ -432,14 +457,21 @@ function renderWeekView(){
     if(!tasks.length)html+=`<div style="font-size:13px;color:var(--text3);padding:8px 0">등록된 업무가 없어요</div>`;
     tasks.forEach((t,idx)=>{
       const type=getTaskType(t);
-      const txt=t.text||'';
-      const m2=txt.match(/\(([^)]+)\)/);let cat=null;
+      const thumb=t.thumbnail||t.text||'';
+      const hasContent=t.text&&t.text!==thumb;
+      const isOpen=!!(S.weekExpanded&&S.weekExpanded[date+'_'+idx]);
+      const m2=(t.text||'').match(/\(([^)]+)\)/);let cat=null;
       if(m2)for(const c of Object.keys(CAT_COLORS)){if(m2[1].includes(c)){cat=c;break;}}
-      html+=`<div class="wtask">
-        ${type==='urgent'?`<span style="font-size:11px;padding:2px 7px;border-radius:10px;flex-shrink:0;margin-top:1px;background:#FCEBEB;color:#791F1F;font-weight:500">★</span>`
-         :cat?`<span style="font-size:11px;padding:2px 7px;border-radius:10px;flex-shrink:0;margin-top:1px;background:${CAT_BG[cat]};color:${CAT_FG[cat]};font-weight:500">${cat}</span>`:''}
-        <span style="font-size:13px;color:var(--text);line-height:1.5;flex:1${type==='urgent'?';font-weight:600':''}">${txt}</span>
-        <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:0 0 0 4px;flex-shrink:0;" onclick="deleteWeekTask('${date}',${idx})"><i class="ti ti-trash"></i></button>
+      html+=`<div class="wtask" style="flex-direction:column;align-items:stretch;gap:0;padding:0;">
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;cursor:${hasContent?'pointer':'default'}" onclick="${hasContent?`toggleWeekExpand('${date}',${idx})`:''}">
+          ${type==='urgent'?`<span style="font-size:11px;padding:2px 7px;border-radius:10px;flex-shrink:0;background:#FCEBEB;color:#791F1F;font-weight:500">★</span>`
+           :cat?`<span style="font-size:11px;padding:2px 7px;border-radius:10px;flex-shrink:0;background:${CAT_BG[cat]};color:${CAT_FG[cat]};font-weight:500">${cat}</span>`:''}
+          <span style="font-size:13px;color:var(--text);line-height:1.5;flex:1${type==='urgent'?';font-weight:600':''}">${thumb}</span>
+          ${hasContent?`<i class="ti ti-chevron-${isOpen?'up':'down'}" style="font-size:13px;color:var(--text3);flex-shrink:0"></i>`:''}
+          <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:0 0 0 6px;flex-shrink:0;" onclick="event.stopPropagation();editWeekTask('${date}',${idx})"><i class="ti ti-pencil"></i></button>
+          <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:0 0 0 4px;flex-shrink:0;" onclick="event.stopPropagation();deleteWeekTask('${date}',${idx})"><i class="ti ti-trash"></i></button>
+        </div>
+        ${isOpen&&hasContent?`<div style="padding:4px 0 8px 0;font-size:12px;color:var(--text2);line-height:1.6;border-top:0.5px solid var(--border)">${t.text.replace(/\n/g,'<br>')}</div>`:''}
       </div>`;
     });
     html+=`<button class="wadd" onclick="openAddTask('${date}')"><i class="ti ti-plus"></i> 업무 추가</button>
@@ -452,6 +484,41 @@ function deleteWeekTask(date,idx){
   if(!userTasks[date])return;
   userTasks[date].splice(idx,1);
   saveAll();render();
+}
+
+function toggleWeekExpand(date,idx){
+  if(!S.weekExpanded)S.weekExpanded={};
+  const key=date+'_'+idx;
+  S.weekExpanded[key]=!S.weekExpanded[key];
+  render();
+}
+
+function editWeekTask(date,idx){
+  const t=(userTasks[date]||[])[idx];
+  if(!t)return;
+  const esc=s=>(s||'').replace(/"/g,'&quot;');
+  showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
+    <div class="modal-handle"></div>
+    <div class="modal-title">업무 수정 (${date.slice(5).replace('-','/')})</div>
+    <div class="mf"><div class="mf-label">썸네일 <span style="color:var(--text3);font-weight:400">(캘린더에 표시, 최대 6자)</span></div><input type="text" id="et-thumb" value="${esc(t.thumbnail||'')}" placeholder="예: 경평보고, 세무조사" maxlength="6"></div>
+    <div class="mf"><div class="mf-label">업무 내용</div><textarea id="et-content" placeholder="업무 내용을 입력하세요...">${esc(t.text||'')}</textarea></div>
+    <div class="mf"><div class="mf-label">구분</div><select id="et-type">
+      <option value="normal"${t.type==='normal'?' selected':''}>일반</option>
+      <option value="urgent"${t.type==='urgent'?' selected':''}>★ 마감/중요</option>
+      <option value="meeting"${t.type==='meeting'?' selected':''}>회의/출장</option>
+    </select></div>
+    <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-s" onclick="saveEditTask('${date}',${idx})">저장</button></div>
+  </div></div>`);
+}
+
+function saveEditTask(date,idx){
+  const thumb=document.getElementById('et-thumb').value.trim();
+  const content=document.getElementById('et-content').value.trim();
+  const type=document.getElementById('et-type').value;
+  if(!content)return;
+  if(!userTasks[date])userTasks[date]=[];
+  userTasks[date][idx]={text:content,type,thumbnail:thumb||content.slice(0,6)};
+  saveAll();closeModal();render();
 }
 
 function toggleDayCard(el){const b=el.nextElementSibling,ch=el.querySelector('.ti-chevron-down'),open=b.style.display!=='none';b.style.display=open?'none':'block';ch.style.transform=open?'':'rotate(180deg)';}
