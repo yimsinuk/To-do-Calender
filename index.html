@@ -29,19 +29,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .cnbtn{background:none;border:0.5px solid var(--border2);border-radius:var(--rs);padding:7px 12px;cursor:pointer;color:var(--text2);font-size:13px;}
 .cal-month-label{font-size:15px;font-weight:600;color:var(--text);}
-.cal-grid{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);overflow:hidden;}
-.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:0.5px solid var(--border);}
+.cal-grid{background:var(--bg);border:1px solid rgba(0,0,0,0.15);border-radius:var(--r);overflow:hidden;}
+@media(prefers-color-scheme:dark){.cal-grid{border-color:rgba(255,255,255,0.18);}}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid rgba(0,0,0,0.15);}
+@media(prefers-color-scheme:dark){.cal-dow{border-bottom-color:rgba(255,255,255,0.18);}}
 .cdow{text-align:center;padding:8px 2px;font-size:11px;font-weight:600;color:var(--text3);}
 .cdow.sun{color:#E24B4A;}.cdow.sat{color:#378ADD;}
 .cal-days{display:grid;grid-template-columns:repeat(7,1fr);}
-.cday{min-height:62px;border-right:0.5px solid var(--border);border-bottom:0.5px solid var(--border);padding:4px 3px;cursor:pointer;}
+.cday{height:64px;border-right:1px solid rgba(0,0,0,0.1);border-bottom:1px solid rgba(0,0,0,0.1);padding:4px 3px;cursor:pointer;overflow:hidden;}
+@media(prefers-color-scheme:dark){.cday{border-right-color:rgba(255,255,255,0.1);border-bottom-color:rgba(255,255,255,0.1);}}
 .cday:nth-child(7n){border-right:none;}
-.cday.empty{cursor:default;background:var(--bg2);}
-.cday-num{font-size:12px;font-weight:500;color:var(--text);width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%;}
+.cday:hover:not(.empty){background:var(--bg2);}
+.cday.empty{cursor:default;background:var(--bg2);border-right:1px solid rgba(0,0,0,0.1);border-bottom:1px solid rgba(0,0,0,0.1);}
+@media(prefers-color-scheme:dark){.cday.empty{border-right-color:rgba(255,255,255,0.1);border-bottom-color:rgba(255,255,255,0.1);}}
+.cday.selected{background:var(--accent-bg);}
+.cday-num{font-size:12px;font-weight:500;color:var(--text);width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%;}
 .cday.today .cday-num{background:var(--accent);color:#fff;}
 .cday.sunday .cday-num{color:#E24B4A;}.cday.saturday .cday-num{color:#378ADD;}
 .cday.today.sunday .cday-num,.cday.today.saturday .cday-num{color:#fff;}
+.cday.selected .cday-num{outline:2px solid var(--accent);outline-offset:1px;}
+.cday.today.selected .cday-num{outline:none;}
 .ctag{font-size:9px;padding:1px 4px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:1px;display:block;}
+/* 인라인 날짜 상세 패널 */
+.day-panel{background:var(--bg);border:1px solid rgba(0,0,0,0.12);border-radius:var(--r);margin-top:10px;overflow:hidden;}
+@media(prefers-color-scheme:dark){.day-panel{border-color:rgba(255,255,255,0.15);}}
+.day-panel-hd{padding:12px 14px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.day-panel-title{font-size:15px;font-weight:700;color:var(--text);}
+.day-panel-sub{font-size:12px;color:var(--text3);}
+.day-panel-body{padding:10px 14px;}
+.day-panel-footer{padding:10px 14px;border-top:0.5px solid var(--border);}
 /* DETAIL */
 .back-btn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--accent);cursor:pointer;margin-bottom:14px;background:none;border:none;padding:0;font-weight:500;}
 .detail-date{font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px;}
@@ -268,12 +284,13 @@ function renderMonth(){
     const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dow=(firstDay+d-1)%7;
     const tasks=getAllTasks(ds);
+    const isSelected=S.selectedDate===ds;
     let cls='cday';
     if(ds===TODAY)cls+=' today';
     if(dow===0)cls+=' sunday';
     if(dow===6)cls+=' saturday';
-    html+=`<div class="${cls}" onclick="openDayDetail('${ds}')"><div class="cday-num">${d}</div>`;
-    // 썸네일 표시: urgent 빨간점 + 각 task 썸네일
+    if(isSelected)cls+=' selected';
+    html+=`<div class="${cls}" onclick="selectDay('${ds}')"><div class="cday-num">${d}</div>`;
     const urgents=tasks.filter(t=>t.type==='urgent');
     const others=tasks.filter(t=>t.type!=='urgent');
     if(urgents.length)html+=`<div style="display:flex;align-items:center;gap:2px;margin-bottom:1px"><div style="width:5px;height:5px;border-radius:50%;background:#E24B4A;flex-shrink:0"></div><span style="font-size:8px;color:#E24B4A;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 9px)">${urgents[0].thumbnail||urgents[0].text.slice(0,6)}</span></div>`;
@@ -286,55 +303,81 @@ function renderMonth(){
     if(tasks.length>3)html+=`<div style="font-size:8px;color:var(--text3);padding-left:2px">+${tasks.length-3}</div>`;
     html+=`</div>`;
   }
-  return html+`</div></div>`;
+  html+=`</div></div>`;
+  // 인라인 날짜 상세 패널
+  if(S.selectedDate){
+    html+=renderDayPanel(S.selectedDate);
+  }
+  return html;
 }
 
-function changeMonth(dir){S.calMonth+=dir;if(S.calMonth>12){S.calMonth=1;S.calYear++;}if(S.calMonth<1){S.calMonth=12;S.calYear--;}render();}
+function selectDay(ds){
+  S.selectedDate = S.selectedDate===ds ? null : ds;
+  render();
+  // 패널이 열리면 스크롤
+  if(S.selectedDate){
+    setTimeout(()=>{
+      const panel=document.querySelector('.day-panel');
+      if(panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },50);
+  }
+}
 
-function openDayDetail(ds){
-  S.selectedDate=ds;S.tab='daydetail';
-  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+function renderDayPanel(ds){
   const d=new Date(ds+' 00:00:00');
   const label=`${d.getMonth()+1}월 ${d.getDate()}일 (${DAY_NAMES[d.getDay()]})`;
   const tasks=getAllTasks(ds);
   const grouped={};const urgents=[];const others=[];
   tasks.forEach((t,idx)=>{
     if(t.type==='urgent'){urgents.push({t,idx});return;}
-    const m=(t.text||'').match(/\(([^)]+)\)/);let done=false;
-    if(m)for(const cat of Object.keys(CAT_COLORS)){if(m[1].includes(cat)){if(!grouped[cat])grouped[cat]=[];grouped[cat].push({t,idx});done=true;break;}}
+    const m2=(t.text||'').match(/\(([^)]+)\)/);let done=false;
+    if(m2)for(const cat of Object.keys(CAT_COLORS)){if(m2[1].includes(cat)){if(!grouped[cat])grouped[cat]=[];grouped[cat].push({t,idx});done=true;break;}}
     if(!done)others.push({t,idx});
   });
-  let html=`<button class="back-btn" onclick="backToMonth()"><i class="ti ti-arrow-left"></i> 월별 보기</button>
-    <div class="detail-date">${label}</div>
-    <div class="detail-sub">${tasks.length}개 업무</div>`;
+  let body='';
   if(urgents.length){
-    html+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:#E24B4A"></div>마감 / 중요</div>`;
-    urgents.forEach(({t,idx})=>html+=`<div class="task-row"><span class="tbadge" style="background:#FCEBEB;color:#791F1F">★ 마감</span><span class="ttext" style="font-weight:600">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})" aria-label="삭제"><i class="ti ti-trash"></i></button></div>`);
-    html+=`</div>`;
+    body+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:#E24B4A"></div>마감 / 중요</div>`;
+    urgents.forEach(({t,idx})=>body+=`<div class="task-row"><span class="tbadge" style="background:#FCEBEB;color:#791F1F">★ 마감</span><span class="ttext" style="font-weight:600">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})"><i class="ti ti-trash"></i></button></div>`);
+    body+=`</div>`;
   }
   Object.entries(grouped).forEach(([cat,items])=>{
-    html+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:${CAT_COLORS[cat]}"></div>${cat}</div>`;
-    items.forEach(({t,idx})=>html+=`<div class="task-row"><span class="tbadge" style="background:${CAT_BG[cat]};color:${CAT_FG[cat]}">${cat}</span><span class="ttext">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})" aria-label="삭제"><i class="ti ti-trash"></i></button></div>`);
-    html+=`</div>`;
+    body+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:${CAT_COLORS[cat]}"></div>${cat}</div>`;
+    items.forEach(({t,idx})=>body+=`<div class="task-row"><span class="tbadge" style="background:${CAT_BG[cat]};color:${CAT_FG[cat]}">${cat}</span><span class="ttext">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})"><i class="ti ti-trash"></i></button></div>`);
+    body+=`</div>`;
   });
   if(others.length){
-    html+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:#888780"></div>기타</div>`;
-    others.forEach(({t,idx})=>html+=`<div class="task-row"><span class="ttext">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})" aria-label="삭제"><i class="ti ti-trash"></i></button></div>`);
-    html+=`</div>`;
+    body+=`<div class="cat-section"><div class="cat-hd"><div class="cdot" style="background:#888780"></div>기타</div>`;
+    others.forEach(({t,idx})=>body+=`<div class="task-row"><span class="ttext">${t.text}</span><button class="tdel" onclick="deleteTask('${ds}',${idx})"><i class="ti ti-trash"></i></button></div>`);
+    body+=`</div>`;
   }
-  if(!tasks.length)html+=`<div class="empty">등록된 업무가 없어요<br><span style="font-size:12px">주별 탭에서 업무를 추가해 보세요</span></div>`;
-  html+=`<button class="go-week-btn" onclick="goToWeekOf('${ds}')"><i class="ti ti-calendar-week"></i> 주별 상세 보기 / 업무 추가</button>`;
-  document.getElementById('content').innerHTML=html;
+  if(!tasks.length) body+=`<div style="text-align:center;padding:20px 0;font-size:13px;color:var(--text3)">등록된 업무가 없어요</div>`;
+  return`<div class="day-panel">
+    <div class="day-panel-hd">
+      <span class="day-panel-title">${label}</span>
+      <span class="day-panel-sub">${tasks.length}개 업무</span>
+    </div>
+    <div class="day-panel-body">${body}</div>
+    <div class="day-panel-footer">
+      <button class="go-week-btn" style="margin-top:0" onclick="goToWeekOf('${ds}')"><i class="ti ti-calendar-week"></i> 주별 상세 보기 / 업무 추가</button>
+    </div>
+  </div>`;
 }
+
+function openDayDetail(ds){selectDay(ds);}
 
 function deleteTask(ds,idx){
   if(!userTasks[ds])return;
   userTasks[ds].splice(idx,1);
   saveAll();
-  openDayDetail(ds);
+  render();
+  setTimeout(()=>{
+    const panel=document.querySelector('.day-panel');
+    if(panel) panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },50);
 }
 
-function backToMonth(){S.tab='month';document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',i===0));render();}
+function backToMonth(){S.tab='month';S.selectedDate=null;document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',i===0));render();}
+function changeMonth(dir){S.calMonth+=dir;if(S.calMonth>12){S.calMonth=1;S.calYear++;}if(S.calMonth<1){S.calMonth=12;S.calYear--;}S.selectedDate=null;render();}
 function goToWeekOf(ds){
   const d=new Date(ds+' 00:00:00'),td=new Date(TODAY+' 00:00:00');
   const sun=new Date(d);sun.setDate(d.getDate()-d.getDay());
@@ -452,6 +495,7 @@ function renderTimeline(){
           <div style="display:flex;align-items:center;gap:2px;margin-left:auto">
             <button style="background:none;border:0.5px solid var(--border2);border-radius:6px;cursor:pointer;color:var(--text2);font-size:13px;padding:3px 7px;line-height:1;${pi===0?'opacity:.3;pointer-events:none':''}" onclick="event.stopPropagation();moveProject(${pi},-1)" aria-label="위로"><i class="ti ti-chevron-up"></i></button>
             <button style="background:none;border:0.5px solid var(--border2);border-radius:6px;cursor:pointer;color:var(--text2);font-size:13px;padding:3px 7px;line-height:1;${pi===projects.length-1?'opacity:.3;pointer-events:none':''}" onclick="event.stopPropagation();moveProject(${pi},1)" aria-label="아래로"><i class="ti ti-chevron-down"></i></button>
+            <button style="background:none;border:none;cursor:pointer;color:var(--text2);font-size:14px;padding:3px 5px;" onclick="event.stopPropagation();editProject(${pi})"><i class="ti ti-pencil"></i></button>
             <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:3px 5px;" onclick="event.stopPropagation();confirmDeleteProject(${pi})"><i class="ti ti-trash"></i></button>
           </div>
           <i class="ti ti-chevron-right tl-pchev" style="transition:transform .2s;${open?'transform:rotate(90deg)':''}"></i>
@@ -467,8 +511,13 @@ function renderTimeline(){
     if(open){
       html+=`<div class="tl-detail-bd">`;
       p.tasks.forEach((t,ti)=>html+=`<div class="tlt-row">
-        <div class="tlt-info"><div class="tlt-name">${t.name}</div><div class="tlt-dates">${fmtD(t.start)} ~ ${fmtD(t.end)}</div></div>
+        <div class="tlt-info">
+          <div class="tlt-name">${t.name}</div>
+          <div class="tlt-dates">${fmtD(t.start)} ~ ${fmtD(t.end)}</div>
+          ${t.note?`<div style="font-size:11px;color:var(--text2);margin-top:3px;line-height:1.5">${t.note.replace(/\n/g,'<br>')}</div>`:''}
+        </div>
         <div class="tlt-st ${STCLS[t.status]}" onclick="cycleStatus(${pi},${ti})">${STATUSES.find(s2=>s2.k===t.status).l}</div>
+        <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:0 0 0 4px;flex-shrink:0;" onclick="editTlTask(${pi},${ti})"><i class="ti ti-pencil"></i></button>
         <button class="tlt-del" onclick="deleteTlTask(${pi},${ti})"><i class="ti ti-trash"></i></button>
       </div>`);
       html+=`<button class="tladd" onclick="openAddTlTask(${pi})"><i class="ti ti-plus"></i> 과업 추가</button></div>`;
@@ -657,29 +706,70 @@ function saveNewTask(date){
   saveAll();closeModal();render();
 }
 
-function openAddTlTask(pi){
+function showTlTaskModal(pi, ti){
+  const isNew = ti < 0;
+  const t = isNew ? {name:'',start:TODAY,end:TODAY,status:'ready',note:''} : projects[pi].tasks[ti];
+  const esc = s => (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
     <div class="modal-handle"></div>
-    <div class="modal-title">과업 추가 — ${projects[pi].name}</div>
-    <div class="mf"><div class="mf-label">과업명</div><input type="text" id="tlt-name" placeholder="과업 이름을 입력하세요"></div>
-    <div class="mf"><div class="mf-label">시작일</div><input type="date" id="tlt-start" value="${TODAY}"></div>
-    <div class="mf"><div class="mf-label">종료일</div><input type="date" id="tlt-end" value="${TODAY}"></div>
-    <div class="mf"><div class="mf-label">진행 상황</div><select id="tlt-status"><option value="ready">시작 전</option><option value="prep">준비 중</option><option value="wip">진행 중</option><option value="done">완료</option></select></div>
-    <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-s" onclick="saveTlTask(${pi})">저장</button></div>
+    <div class="modal-title">${isNew?'과업 추가':'과업 수정'} — ${projects[pi].name}</div>
+    <div class="mf"><div class="mf-label">과업명</div><input type="text" id="tlt-name" value="${esc(t.name)}" placeholder="과업 이름을 입력하세요"></div>
+    <div class="mf"><div class="mf-label">시작일</div><input type="date" id="tlt-start" value="${t.start}"></div>
+    <div class="mf"><div class="mf-label">종료일</div><input type="date" id="tlt-end" value="${t.end}"></div>
+    <div class="mf"><div class="mf-label">진행 상황</div><select id="tlt-status">
+      <option value="ready"${t.status==='ready'?' selected':''}>시작 전</option>
+      <option value="prep"${t.status==='prep'?' selected':''}>준비 중</option>
+      <option value="wip"${t.status==='wip'?' selected':''}>진행 중</option>
+      <option value="done"${t.status==='done'?' selected':''}>완료</option>
+    </select></div>
+    <div class="mf"><div class="mf-label">내용</div><textarea id="tlt-note" placeholder="과업 내용을 입력하세요...">${esc(t.note||'')}</textarea></div>
+    <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-s" onclick="saveTlTask(${pi},${ti})">저장</button></div>
   </div></div>`);
 }
-function saveTlTask(pi){const name=document.getElementById('tlt-name').value.trim(),start=document.getElementById('tlt-start').value,end=document.getElementById('tlt-end').value,status=document.getElementById('tlt-status').value;if(!name)return;projects[pi].tasks.push({name,start,end,status});saveAll();closeModal();render();}
+function openAddTlTask(pi){showTlTaskModal(pi,-1);}
+function editTlTask(pi,ti){showTlTaskModal(pi,ti);}
+function saveTlTask(pi,ti){
+  const name=document.getElementById('tlt-name').value.trim();
+  const start=document.getElementById('tlt-start').value;
+  const end=document.getElementById('tlt-end').value;
+  const status=document.getElementById('tlt-status').value;
+  const note=document.getElementById('tlt-note').value.trim();
+  if(!name)return;
+  const obj={name,start,end,status,note};
+  if(ti<0) projects[pi].tasks.push(obj);
+  else projects[pi].tasks[ti]=obj;
+  saveAll();closeModal();render();
+}
 
-function openAddProject(){
+function showProjectModal(pi){
+  const isNew = pi < 0;
+  const p = isNew ? {name:'',color:'#534AB7'} : projects[pi];
+  const esc = s => (s||'').replace(/"/g,'&quot;');
+  const colors = [
+    {v:'#534AB7',l:'보라'},{v:'#1D9E75',l:'초록'},{v:'#378ADD',l:'파랑'},
+    {v:'#D85A30',l:'주황'},{v:'#E24B4A',l:'빨강'},{v:'#D4537E',l:'분홍'},
+    {v:'#BA7517',l:'노랑'},{v:'#888780',l:'회색'},
+  ];
   showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
     <div class="modal-handle"></div>
-    <div class="modal-title">프로젝트 추가</div>
-    <div class="mf"><div class="mf-label">프로젝트명</div><input type="text" id="ap-name" placeholder="프로젝트 이름을 입력하세요"></div>
-    <div class="mf"><div class="mf-label">색상</div><select id="ap-color"><option value="#534AB7">보라</option><option value="#1D9E75">초록</option><option value="#378ADD">파랑</option><option value="#D85A30">주황</option><option value="#E24B4A">빨강</option><option value="#D4537E">분홍</option></select></div>
-    <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-s" onclick="saveProject()">저장</button></div>
+    <div class="modal-title">${isNew?'프로젝트 추가':'프로젝트 수정'}</div>
+    <div class="mf"><div class="mf-label">프로젝트명</div><input type="text" id="ap-name" value="${esc(p.name)}" placeholder="프로젝트 이름을 입력하세요"></div>
+    <div class="mf"><div class="mf-label">색상</div><select id="ap-color">
+      ${colors.map(c=>`<option value="${c.v}"${p.color===c.v?' selected':''}>${c.l}</option>`).join('')}
+    </select></div>
+    <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-s" onclick="saveProject(${pi})">저장</button></div>
   </div></div>`);
 }
-function saveProject(){const name=document.getElementById('ap-name').value.trim(),color=document.getElementById('ap-color').value;if(!name)return;projects.push({id:'p'+Date.now(),name,color,tasks:[]});saveAll();closeModal();render();}
+function openAddProject(){showProjectModal(-1);}
+function editProject(pi){showProjectModal(pi);}
+function saveProject(pi){
+  const name=document.getElementById('ap-name').value.trim();
+  const color=document.getElementById('ap-color').value;
+  if(!name)return;
+  if(pi<0) projects.push({id:'p'+Date.now(),name,color,tasks:[]});
+  else {projects[pi].name=name; projects[pi].color=color;}
+  saveAll();closeModal();render();
+}
 
 render();
 </script>
