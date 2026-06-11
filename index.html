@@ -848,6 +848,33 @@ function saveProject(pi){
 }
 
 render();
+
+// 스와이프로 탭 전환
+(function(){
+  const TABS=['month','week','timeline','memo'];
+  let startX=0,startY=0,startTime=0;
+  const content=document.getElementById('content');
+
+  content.addEventListener('touchstart',e=>{
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    startTime=Date.now();
+  },{passive:true});
+
+  content.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=e.changedTouches[0].clientY-startY;
+    const dt=Date.now()-startTime;
+    // 수평 60px 이상, 수직 40px 미만, 300ms 이내
+    if(Math.abs(dx)>60&&Math.abs(dy)<40&&dt<300){
+      if(S.tab==='daydetail'||S.tab==='memodetail') return;
+      const cur=TABS.indexOf(S.tab);
+      if(cur===-1) return;
+      if(dx<0&&cur<TABS.length-1) switchTab(TABS[cur+1]); // 왼쪽 스와이프 → 다음 탭
+      if(dx>0&&cur>0) switchTab(TABS[cur-1]);              // 오른쪽 스와이프 → 이전 탭
+    }
+  },{passive:true});
+})();
 </script>
 </body>
 </html>
