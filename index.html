@@ -29,19 +29,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
 .cnbtn{background:none;border:0.5px solid var(--border2);border-radius:var(--rs);padding:7px 12px;cursor:pointer;color:var(--text2);font-size:13px;}
 .cal-month-label{font-size:15px;font-weight:600;color:var(--text);}
-.cal-grid{background:var(--bg);border:1px solid rgba(0,0,0,0.15);border-radius:var(--r);overflow:hidden;}
-@media(prefers-color-scheme:dark){.cal-grid{border-color:rgba(255,255,255,0.18);}}
-.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid rgba(0,0,0,0.15);}
-@media(prefers-color-scheme:dark){.cal-dow{border-bottom-color:rgba(255,255,255,0.18);}}
+.cal-grid{background:var(--bg);border:1.5px solid rgba(0,0,0,0.2);border-radius:var(--r);overflow:hidden;}
+@media(prefers-color-scheme:dark){.cal-grid{border-color:rgba(255,255,255,0.25);}}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1.5px solid rgba(0,0,0,0.2);}
+@media(prefers-color-scheme:dark){.cal-dow{border-bottom-color:rgba(255,255,255,0.25);}}
 .cdow{text-align:center;padding:8px 2px;font-size:11px;font-weight:600;color:var(--text3);}
 .cdow.sun{color:#E24B4A;}.cdow.sat{color:#378ADD;}
-.cal-days{display:grid;grid-template-columns:repeat(7,1fr);}
-.cday{height:64px;border-right:1px solid rgba(0,0,0,0.1);border-bottom:1px solid rgba(0,0,0,0.1);padding:4px 3px;cursor:pointer;overflow:hidden;}
-@media(prefers-color-scheme:dark){.cday{border-right-color:rgba(255,255,255,0.1);border-bottom-color:rgba(255,255,255,0.1);}}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:64px;align-items:stretch;}
+.cday{height:64px;border-right:1px solid rgba(0,0,0,0.15);border-bottom:1px solid rgba(0,0,0,0.15);padding:4px 3px;cursor:pointer;overflow:hidden;background:var(--bg);}
+@media(prefers-color-scheme:dark){.cday{border-right-color:rgba(255,255,255,0.15);border-bottom-color:rgba(255,255,255,0.15);}}
 .cday:nth-child(7n){border-right:none;}
-.cday:hover:not(.empty){background:var(--bg2);}
-.cday.empty{cursor:default;background:var(--bg2);border-right:1px solid rgba(0,0,0,0.1);border-bottom:1px solid rgba(0,0,0,0.1);}
-@media(prefers-color-scheme:dark){.cday.empty{border-right-color:rgba(255,255,255,0.1);border-bottom-color:rgba(255,255,255,0.1);}}
+.cday:hover:not(.empty){filter:brightness(0.95);}
+@media(prefers-color-scheme:dark){.cday:hover:not(.empty){filter:brightness(1.1);}}
+.cday.empty{cursor:default;background:var(--bg2) !important;}
+.cday.selected{background:var(--accent-bg) !important;}
 .cday.selected{background:var(--accent-bg);}
 .cday-num{font-size:12px;font-weight:500;color:var(--text);width:22px;height:22px;display:flex;align-items:center;justify-content:center;margin-bottom:2px;border-radius:50%;}
 .cday.today .cday-num{background:var(--accent);color:#fff;}
@@ -302,6 +303,14 @@ function renderMonth(){
     });
     if(tasks.length>3)html+=`<div style="font-size:8px;color:var(--text3);padding-left:2px">+${tasks.length-3}</div>`;
     html+=`</div>`;
+  }
+  // 월말 빈 칸 채우기 (마지막 행 나머지)
+  const totalCells = firstDay + dim;
+  const trailingEmpty = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for(let i=0;i<trailingEmpty;i++){
+    const trailDow=(totalCells+i)%7;
+    const trailCls='cday empty'+(trailDow===0?' sunday':trailDow===6?' saturday':'');
+    html+=`<div class="${trailCls}"></div>`;
   }
   html+=`</div></div>`;
   // 인라인 날짜 상세 패널
