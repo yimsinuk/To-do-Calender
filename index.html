@@ -68,32 +68,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .wtask{display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:0.5px solid var(--border);}
 .wtask:last-child{border-bottom:none;}
 .wadd{width:100%;padding:8px;background:none;border:0.5px dashed var(--border2);border-radius:var(--rs);font-size:12px;color:var(--text3);cursor:pointer;margin-top:6px;}
-/* TIMELINE */
-.tlp{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
-.tlp-hd{padding:13px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;}
-.tlp-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.tlp-name{font-size:14px;font-weight:600;color:var(--text);flex:1;}
-.tlp-meta{font-size:11px;color:var(--text3);}
-.tlp-bd{border-top:0.5px solid var(--border);padding:10px 14px;}
-.tlt-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);}
-.tlt-row:last-child{border-bottom:none;}
-.tlt-info{flex:1;min-width:0;}
-.tlt-name{font-size:13px;color:var(--text);margin-bottom:3px;}
-.tlt-dates{font-size:11px;color:var(--text3);}
-.tlt-st{font-size:11px;padding:4px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;cursor:pointer;font-weight:500;}
-.st-ready{background:#F1EFE8;color:#5F5E5A;}.st-prep{background:#E6F1FB;color:#185FA5;}
-.st-wip{background:#FAEEDA;color:#854F0B;}.st-done{background:#EAF3DE;color:#3B6D11;}
-.tlt-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:0 0 0 4px;flex-shrink:0;}
-.tlt-del:hover{color:#E24B4A;}
-.tladd{width:100%;padding:8px;background:none;border:0.5px dashed var(--border2);border-radius:var(--rs);font-size:12px;color:var(--text3);cursor:pointer;margin-top:6px;}
-.tlnew{width:100%;padding:12px;background:none;border:0.5px solid var(--border2);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;margin-top:4px;}
-/* MEMO */
+/* MODAL */
 .mfilter{margin-bottom:12px;}
 .mtype-tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
 .mtype-btn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--border2);background:var(--bg);color:var(--text2);}
 .mtype-btn.active{background:var(--accent-bg);color:var(--accent-text);border-color:var(--accent);}
 .mtag-filter{display:flex;gap:5px;flex-wrap:wrap;}
 .tfc{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;cursor:pointer;border:0.5px solid var(--border);background:var(--bg);color:var(--text2);}
+/* 메모 썸네일 카드 */
+.mthumb-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;}
+.mthumb-card:active{background:var(--bg2);}
+.mthumb-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.mthumb-main{flex:1;min-width:0;}
+.mthumb-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mthumb-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.mthumb-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:500;}
+.mthumb-date{font-size:11px;color:var(--text3);}
+.mthumb-tags{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap;}
+.mthumb-tag{font-size:10px;padding:1px 6px;border-radius:8px;font-weight:500;}
+/* 메모 상세 */
+.mdetail-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.mdetail-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.mdetail-title{font-size:18px;font-weight:700;color:var(--text);flex:1;}
+.mdetail-actions{display:flex;gap:6px;}
+.mdetail-sec{background:var(--bg2);border-radius:var(--rs);padding:12px 14px;margin-bottom:8px;}
+.mdetail-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;}
+.mdetail-val{font-size:14px;color:var(--text);line-height:1.6;}
 .mcard{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:13px 14px;margin-bottom:8px;}
 .mcard-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .mtbadge{font-size:11px;padding:3px 9px;border-radius:10px;font-weight:500;}
@@ -109,7 +109,43 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .mdel-btn:hover{color:#E24B4A;}
 .fab-wrap{display:flex;justify-content:flex-end;margin-top:8px;position:sticky;bottom:calc(env(safe-area-inset-bottom,0) + 12px);}
 .fab{background:var(--accent);color:#fff;border:none;border-radius:24px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 12px rgba(83,74,183,.35);}
-/* MODAL */
+/* TIMELINE 간트 */
+.tl-wrap{padding-bottom:8px;}
+.tl-proj-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);margin-bottom:10px;overflow:hidden;}
+.tl-proj-summary{padding:13px 14px;cursor:pointer;}
+.tl-proj-summary:active{background:var(--bg2);}
+.tl-proj-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.tl-pdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.tl-pname{font-size:14px;font-weight:600;color:var(--text);flex:1;}
+.tl-pmeta{font-size:11px;color:var(--text3);}
+.tl-pchev{font-size:15px;color:var(--text3);transition:transform .2s;}
+/* 진행률 도넛 + 바 영역 */
+.tl-visual{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.tl-donut-wrap{position:relative;width:52px;height:52px;flex-shrink:0;}
+.tl-donut-wrap svg{transform:rotate(-90deg);}
+.tl-donut-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text);}
+.tl-bars{flex:1;min-width:0;}
+.tl-bar-row{margin-bottom:5px;}
+.tl-bar-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-bottom:2px;}
+.tl-bar-track{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;}
+.tl-bar-fill{height:100%;border-radius:3px;transition:width .4s ease;}
+/* 상태 칩 행 */
+.tl-status-row{display:flex;gap:5px;flex-wrap:wrap;}
+.tl-st-chip{font-size:10px;padding:3px 8px;border-radius:8px;font-weight:500;}
+/* 상세 보기 */
+.tl-detail-bd{border-top:0.5px solid var(--border);padding:10px 14px;}
+.tlt-row{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border);}
+.tlt-row:last-child{border-bottom:none;}
+.tlt-info{flex:1;min-width:0;}
+.tlt-name{font-size:13px;color:var(--text);margin-bottom:3px;}
+.tlt-dates{font-size:11px;color:var(--text3);}
+.tlt-st{font-size:11px;padding:4px 10px;border-radius:10px;white-space:nowrap;flex-shrink:0;cursor:pointer;font-weight:500;}
+.st-ready{background:#F1EFE8;color:#5F5E5A;}.st-prep{background:#E6F1FB;color:#185FA5;}
+.st-wip{background:#FAEEDA;color:#854F0B;}.st-done{background:#EAF3DE;color:#3B6D11;}
+.tlt-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:0 0 0 4px;flex-shrink:0;}
+.tlt-del:hover{color:#E24B4A;}
+.tladd{width:100%;padding:8px;background:none;border:0.5px dashed var(--border2);border-radius:var(--rs);font-size:12px;color:var(--text3);cursor:pointer;margin-top:6px;}
+.tlnew{width:100%;padding:12px;background:none;border:0.5px solid var(--border2);border-radius:var(--r);font-size:13px;font-weight:600;color:var(--accent);cursor:pointer;margin-top:4px;}
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center;z-index:200;}
 .modal-box{background:var(--bg);border-radius:20px 20px 0 0;padding:20px 16px calc(env(safe-area-inset-bottom,0) + 20px);width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
 .modal-handle{width:40px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 16px;}
@@ -124,6 +160,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ctag-row{display:flex;gap:7px;margin-top:7px;}
 .ctag-row input{flex:1;}
 .ctag-row button{padding:0 14px;border-radius:var(--rs);font-size:13px;font-weight:600;cursor:pointer;border:0.5px solid var(--border2);background:none;color:var(--accent);white-space:nowrap;}
+.tag-manage-btn{display:flex;align-items:center;gap:4px;margin-top:8px;padding:5px 0;font-size:12px;color:var(--text3);background:none;border:none;cursor:pointer;}
+.tag-manage-btn:hover{color:var(--accent);}
+.tag-manage-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.tag-manage-row:last-child{border-bottom:none;}
+.tag-manage-pill{font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;flex:1;}
+.tag-manage-edit{background:none;border:0.5px solid var(--border2);border-radius:var(--rs);padding:5px 10px;font-size:12px;color:var(--accent);cursor:pointer;}
+.tag-manage-del{background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;padding:4px;}
+.tag-manage-del:hover{color:#E24B4A;}
+.tag-edit-row{display:flex;gap:6px;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);}
+.tag-edit-row input{flex:1;font-family:inherit;font-size:13px;background:var(--bg2);border:0.5px solid var(--accent);border-radius:var(--rs);padding:6px 10px;color:var(--text);outline:none;}
+.tag-edit-save{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;}
+.tag-edit-cancel{background:none;border:0.5px solid var(--border2);border-radius:var(--rs);padding:6px 10px;font-size:12px;color:var(--text2);cursor:pointer;}
 .mactions{display:flex;gap:8px;margin-top:18px;}
 .mactions button{flex:1;padding:13px;border-radius:var(--rs);font-size:15px;font-weight:600;cursor:pointer;}
 .btn-c{background:var(--bg2);border:0.5px solid var(--border);color:var(--text2);}
@@ -131,10 +179,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-danger{background:#FCEBEB;border:0.5px solid #F09595;color:#791F1F;}
 .empty{text-align:center;padding:50px 0;color:var(--text3);font-size:14px;line-height:1.8;}
 .today-badge{font-size:10px;background:var(--accent-bg);color:var(--accent-text);padding:1px 7px;border-radius:10px;margin-left:5px;font-weight:600;}
-/* PWA BANNER */
-.pwa-banner{background:var(--accent-bg);border:0.5px solid var(--accent);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;display:flex;align-items:flex-start;gap:10px;}
-.pwa-banner-text{flex:1;font-size:12px;color:var(--accent-text);line-height:1.6;}
-.pwa-banner-close{background:none;border:none;cursor:pointer;color:var(--accent-text);font-size:16px;padding:0;flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -174,7 +218,7 @@ let customTags=ld('ct4',[...DEFAULT_TAGS]);
 let projects=ld('pj4',[]);
 function saveAll(){sv('ut4',userTasks);sv('mm4',memos);sv('pj4',projects);sv('ct4',customTags);}
 
-let S={tab:'month',calYear:new Date().getFullYear(),calMonth:new Date().getMonth()+1,selectedDate:null,weekOffset:0,mTypeF:'전체',mTagF:'전체',tlOpen:{},pwaDismissed:ld('pwa_dismissed',false)};
+let S={tab:'month',calYear:new Date().getFullYear(),calMonth:new Date().getMonth()+1,selectedDate:null,weekOffset:0,mTypeF:'전체',mTagF:'전체',tlOpen:{}};
 
 function switchTab(tab){
   S.tab=tab;
@@ -207,24 +251,11 @@ function render(){
   else c.innerHTML=renderMemo();
 }
 
-function pwaBanner(){
-  if(S.pwaDismissed)return'';
-  return`<div class="pwa-banner">
-    <div class="pwa-banner-text">
-      <strong>홈 화면에 앱으로 추가하기 (갤럭시 인터넷)</strong><br>
-      화면 하단 메뉴 버튼(☰) → <strong>페이지 추가</strong> → <strong>홈 화면</strong> 탭 후 <strong>추가</strong>
-    </div>
-    <button class="pwa-banner-close" onclick="dismissPwa()"><i class="ti ti-x"></i></button>
-  </div>`;
-}
-function dismissPwa(){S.pwaDismissed=true;sv('pwa_dismissed',true);render();}
-
 function renderMonth(){
   const y=S.calYear,m=S.calMonth;
   const firstDay=new Date(y,m-1,1).getDay();
   const dim=new Date(y,m,0).getDate();
-  let html=pwaBanner();
-  html+=`<div class="cal-nav">
+  let html=`<div class="cal-nav">
     <button class="cnbtn" onclick="changeMonth(-1)"><i class="ti ti-chevron-left"></i></button>
     <span class="cal-month-label">${y}년 ${m}월</span>
     <button class="cnbtn" onclick="changeMonth(1)"><i class="ti ti-chevron-right"></i></button>
@@ -237,14 +268,22 @@ function renderMonth(){
     const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const dow=(firstDay+d-1)%7;
     const tasks=getAllTasks(ds);
-    const cats=extractCats(tasks);
     let cls='cday';
     if(ds===TODAY)cls+=' today';
     if(dow===0)cls+=' sunday';
     if(dow===6)cls+=' saturday';
     html+=`<div class="${cls}" onclick="openDayDetail('${ds}')"><div class="cday-num">${d}</div>`;
-    if(tasks.some(t=>t.type==='urgent'))html+=`<div style="display:flex;gap:2px;margin-bottom:2px"><div style="width:5px;height:5px;border-radius:50%;background:#E24B4A"></div></div>`;
-    cats.filter(c=>c!=='★마감').slice(0,2).forEach(cat=>html+=`<div class="ctag" style="background:${CAT_BG[cat]||'#F1EFE8'};color:${CAT_FG[cat]||'#444441'}">${cat}</div>`);
+    // 썸네일 표시: urgent 빨간점 + 각 task 썸네일
+    const urgents=tasks.filter(t=>t.type==='urgent');
+    const others=tasks.filter(t=>t.type!=='urgent');
+    if(urgents.length)html+=`<div style="display:flex;align-items:center;gap:2px;margin-bottom:1px"><div style="width:5px;height:5px;border-radius:50%;background:#E24B4A;flex-shrink:0"></div><span style="font-size:8px;color:#E24B4A;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(100% - 9px)">${urgents[0].thumbnail||urgents[0].text.slice(0,6)}</span></div>`;
+    others.slice(0,2).forEach(t=>{
+      const typeBg=t.type==='meeting'?'#E6F1FB':'var(--bg2)';
+      const typeFg=t.type==='meeting'?'#185FA5':'var(--text2)';
+      const thumb=t.thumbnail||t.text.slice(0,6);
+      html+=`<div style="font-size:8px;padding:1px 3px;border-radius:4px;background:${typeBg};color:${typeFg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;margin-bottom:1px">${thumb}</div>`;
+    });
+    if(tasks.length>3)html+=`<div style="font-size:8px;color:var(--text3);padding-left:2px">+${tasks.length-3}</div>`;
     html+=`</div>`;
   }
   return html+`</div></div>`;
@@ -362,35 +401,71 @@ function changeWeek(dir){S.weekOffset+=dir;render();}
 
 const STATUSES=[{k:'ready',l:'시작 전'},{k:'prep',l:'준비 중'},{k:'wip',l:'진행 중'},{k:'done',l:'완료'}];
 const STCLS={ready:'st-ready',prep:'st-prep',wip:'st-wip',done:'st-done'};
+const ST_COLOR={ready:'#aeaeb2',prep:'#378ADD',wip:'#BA7517',done:'#639922'};
+
+function parseD(s){return new Date(s+' 00:00:00');}
+function fmtD(s){return s.slice(5).replace('-','/');}
 
 function renderTimeline(){
-  let html='';
+  let html=`<div class="tl-wrap">`;
   if(!projects.length)html+=`<div class="empty">프로젝트가 없어요<br><span style="font-size:12px">아래 버튼으로 추가하세요</span></div>`;
   projects.forEach((p,pi)=>{
     const open=S.tlOpen[p.id];
-    const done=p.tasks.filter(t=>t.status==='done').length;
-    html+=`<div class="tlp"><div class="tlp-hd" onclick="toggleProject('${p.id}')">
-      <div class="tlp-dot" style="background:${p.color}"></div>
-      <span class="tlp-name">${p.name}</span>
-      <span class="tlp-meta">${done}/${p.tasks.length}</span>
-      <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:15px;padding:2px 4px;margin-left:4px;" onclick="event.stopPropagation();confirmDeleteProject(${pi})"><i class="ti ti-trash"></i></button>
-      <i class="ti ti-chevron-down" style="font-size:15px;color:var(--text3);transition:transform .2s;${open?'transform:rotate(180deg)':''}; margin-left:2px"></i>
-    </div>`;
-    if(open){
-      html+=`<div class="tlp-bd">`;
-      p.tasks.forEach((t,ti)=>html+=`<div class="tlt-row">
-        <div class="tlt-info">
-          <div class="tlt-name">${t.name}</div>
-          <div class="tlt-dates">${t.start.slice(5).replace('-','/')} ~ ${t.end.slice(5).replace('-','/')}</div>
+    const total=p.tasks.length;
+    const doneN=p.tasks.filter(t=>t.status==='done').length;
+    const wipN=p.tasks.filter(t=>t.status==='wip').length;
+    const prepN=p.tasks.filter(t=>t.status==='prep').length;
+    const readyN=total-doneN-wipN-prepN;
+    const pct=total?Math.round(doneN/total*100):0;
+    const r=20,cx=26,cy=26,circ=2*Math.PI*r;
+    function arc(pct2,offset,color){if(pct2<=0)return'';return`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="6" stroke-dasharray="${pct2*circ} ${circ}" stroke-dashoffset="${-offset*circ}"/>`;}
+    const donut=`<svg width="52" height="52" viewBox="0 0 52 52" style="transform:rotate(-90deg)">
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg3)" stroke-width="6"/>
+      ${arc(total?doneN/total:0, 0,'#639922')}
+      ${arc(total?wipN/total:0, total?doneN/total:0,'#BA7517')}
+      ${arc(total?prepN/total:0, total?(doneN+wipN)/total:0,'#378ADD')}
+    </svg>`;
+    let minD=null,maxD=null;
+    p.tasks.forEach(t=>{const s2=parseD(t.start),e2=parseD(t.end);if(!minD||s2<minD)minD=s2;if(!maxD||e2>maxD)maxD=e2;});
+    const totalMs=maxD&&minD&&maxD>minD?(maxD-minD):1;
+    const bars=p.tasks.slice(0,4).map(t=>{
+      const s2=parseD(t.start),e2=parseD(t.end);
+      const left=minD?Math.max(0,(s2-minD)/totalMs*100):0;
+      const width=Math.max(6,(e2-s2+86400000)/totalMs*100);
+      return`<div class="tl-bar-row">
+        <div class="tl-bar-label"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72%">${t.name}</span><span>${fmtD(t.end)}</span></div>
+        <div class="tl-bar-track"><div class="tl-bar-fill" style="margin-left:${left}%;width:${Math.min(width,100-left)}%;background:${ST_COLOR[t.status]}"></div></div>
+      </div>`;
+    }).join('');
+    const chips=[{n:doneN,l:'완료',bg:'#EAF3DE',fg:'#3B6D11'},{n:wipN,l:'진행중',bg:'#FAEEDA',fg:'#854F0B'},{n:prepN,l:'준비중',bg:'#E6F1FB',fg:'#185FA5'},{n:readyN,l:'대기',bg:'#F1EFE8',fg:'#5F5E5A'}].filter(c=>c.n>0);
+    html+=`<div class="tl-proj-card">
+      <div class="tl-proj-summary" onclick="toggleProject('${p.id}')">
+        <div class="tl-proj-top">
+          <div class="tl-pdot" style="background:${p.color}"></div>
+          <span class="tl-pname">${p.name}</span>
+          <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 4px;" onclick="event.stopPropagation();confirmDeleteProject(${pi})"><i class="ti ti-trash"></i></button>
+          <i class="ti ti-chevron-down tl-pchev" style="${open?'transform:rotate(180deg)':''}"></i>
         </div>
-        <div class="tlt-st ${STCLS[t.status]}" onclick="cycleStatus(${pi},${ti})">${STATUSES.find(s=>s.k===t.status).l}</div>
+        <div class="tl-visual">
+          <div class="tl-donut-wrap">${donut}<div class="tl-donut-pct">${pct}%</div></div>
+          <div class="tl-bars">${bars||`<div style="font-size:11px;color:var(--text3);padding:8px 0">과업을 추가하세요</div>`}</div>
+        </div>
+        <div class="tl-status-row">
+          ${chips.map(c=>`<span class="tl-st-chip" style="background:${c.bg};color:${c.fg}">${c.l} ${c.n}</span>`).join('')}
+        </div>
+      </div>`;
+    if(open){
+      html+=`<div class="tl-detail-bd">`;
+      p.tasks.forEach((t,ti)=>html+=`<div class="tlt-row">
+        <div class="tlt-info"><div class="tlt-name">${t.name}</div><div class="tlt-dates">${fmtD(t.start)} ~ ${fmtD(t.end)}</div></div>
+        <div class="tlt-st ${STCLS[t.status]}" onclick="cycleStatus(${pi},${ti})">${STATUSES.find(s2=>s2.k===t.status).l}</div>
         <button class="tlt-del" onclick="deleteTlTask(${pi},${ti})"><i class="ti ti-trash"></i></button>
       </div>`);
       html+=`<button class="tladd" onclick="openAddTlTask(${pi})"><i class="ti ti-plus"></i> 과업 추가</button></div>`;
     }
     html+=`</div>`;
   });
-  return html+`<button class="tlnew" onclick="openAddProject()"><i class="ti ti-plus"></i> 프로젝트 추가</button>`;
+  return html+`<button class="tlnew" onclick="openAddProject()"><i class="ti ti-plus"></i> 프로젝트 추가</button></div>`;
 }
 
 function toggleProject(id){S.tlOpen[id]=!S.tlOpen[id];render();}
@@ -398,15 +473,17 @@ function cycleStatus(pi,ti){const o=['ready','prep','wip','done'];projects[pi].t
 function deleteTlTask(pi,ti){projects[pi].tasks.splice(ti,1);saveAll();render();}
 function confirmDeleteProject(pi){
   showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
-    <div class="modal-handle"></div>
-    <div class="modal-title">프로젝트 삭제</div>
-    <p style="font-size:14px;color:var(--text2);margin-bottom:20px">'${projects[pi].name}' 프로젝트와 모든 과업이 삭제돼요. 계속하시겠어요?</p>
+    <div class="modal-handle"></div><div class="modal-title">프로젝트 삭제</div>
+    <p style="font-size:14px;color:var(--text2);margin-bottom:20px">'${projects[pi].name}' 프로젝트와 모든 과업이 삭제돼요.</p>
     <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-danger" onclick="deleteProject(${pi})">삭제</button></div>
   </div></div>`);
 }
 function deleteProject(pi){projects.splice(pi,1);saveAll();closeModal();render();}
 
 function getActiveMemoTags(){const s=new Set();memos.forEach(m=>(m.tags||[]).forEach(t=>s.add(t)));return[...s];}
+function memoTypeIcon(type){return type==='통화'?'📞':type==='지시'?'📋':'📝';}
+function memoTypeBg(type){return type==='통화'?'#E1F5EE':type==='지시'?'#FAEEDA':'#F1EFE8';}
+function memoTypeFg(type){return type==='통화'?'#085041':type==='지시'?'#633806':'#444441';}
 
 function renderMemo(){
   const activeTags=getActiveMemoTags();
@@ -426,55 +503,107 @@ function renderMemo(){
   if(!filtered.length)html+=`<div class="empty">작성된 메모가 없어요<br><span style="font-size:12px">아래 + 버튼으로 추가하세요</span></div>`;
   filtered.forEach(m=>{
     const idx=memos.indexOf(m);
-    const tcls=m.type==='통화'?'tc':m.type==='지시'?'to':'te';
-    html+=`<div class="mcard">
-      <div class="mcard-top">
-        <span class="mtbadge ${tcls}">${m.type}</span>
-        <div style="display:flex;align-items:center;gap:4px">
-          <span class="mdate">${m.date}</span>
-          <button class="medit" onclick="editMemo(${idx})"><i class="ti ti-pencil"></i></button>
-          <button class="mdel-btn" onclick="confirmDeleteMemo(${idx})"><i class="ti ti-trash"></i></button>
+    const icon=memoTypeIcon(m.type);
+    const ibg=memoTypeBg(m.type);
+    const title=m.thumbnail||(m.person||m.content||'메모').slice(0,16);
+    html+=`<div class="mthumb-card" onclick="openMemoDetail(${idx})">
+      <div class="mthumb-icon" style="background:${ibg}">${icon}</div>
+      <div class="mthumb-main">
+        <div class="mthumb-title">${title}</div>
+        <div class="mthumb-meta">
+          <span class="mthumb-badge" style="background:${ibg};color:${memoTypeFg(m.type)}">${m.type}</span>
+          <span class="mthumb-date">${m.date}</span>
+          ${m.person?`<span style="font-size:11px;color:var(--text2)">${m.person}</span>`:''}
         </div>
+        ${(m.tags&&m.tags.length)?`<div class="mthumb-tags">${m.tags.slice(0,3).map(tag=>{const {bg,fg}=tagColor(tag);return`<span class="mthumb-tag" style="background:${bg};color:${fg}">${tag}</span>`;}).join('')}</div>`:''}
       </div>
-      ${m.person?`<div class="mperson">${m.person}</div>`:''}
-      ${m.phone?`<div class="mphone"><i class="ti ti-phone" style="font-size:12px;margin-right:3px"></i>${m.phone}</div>`:''}
-      ${m.content?`<div class="mbody">${m.content.replace(/\n/g,'<br>')}</div>`:''}
-      ${(m.tags&&m.tags.length)?`<div class="mtags-row">${m.tags.map(tag=>{const {bg,fg}=tagColor(tag);return`<span class="mtpill" style="background:${bg};color:${fg}">${tag}</span>`;}).join('')}</div>`:''}
+      <i class="ti ti-chevron-right" style="font-size:14px;color:var(--text3);flex-shrink:0"></i>
     </div>`;
   });
   html+=`<div class="fab-wrap"><button class="fab" onclick="openAddMemo()"><i class="ti ti-plus"></i> 메모 추가</button></div>`;
   return html;
 }
 
+function openMemoDetail(idx){
+  S.tab='memodetail';S.memoDetailIdx=idx;
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  renderMemoDetail();
+}
+function renderMemoDetail(){
+  const m=memos[S.memoDetailIdx];
+  if(!m){switchTab('memo');return;}
+  const icon=memoTypeIcon(m.type);
+  const ibg=memoTypeBg(m.type);
+  const title=m.thumbnail||(m.person||m.content||'메모').slice(0,16);
+  let html=`<button class="back-btn" onclick="backToMemo()"><i class="ti ti-arrow-left"></i> 메모 목록</button>
+  <div class="mdetail-header">
+    <div class="mdetail-icon" style="background:${ibg}">${icon}</div>
+    <div class="mdetail-title">${title}</div>
+    <div class="mdetail-actions">
+      <button class="medit" onclick="editMemo(${S.memoDetailIdx})"><i class="ti ti-pencil"></i></button>
+      <button class="mdel-btn" onclick="confirmDeleteMemo(${S.memoDetailIdx})"><i class="ti ti-trash"></i></button>
+    </div>
+  </div>`;
+  const rows=[
+    {l:'구분',v:`<span style="background:${ibg};color:${memoTypeFg(m.type)};padding:3px 10px;border-radius:10px;font-size:13px;font-weight:500">${m.type}</span>`},
+    {l:'날짜',v:m.date},
+    m.person?{l:'상대방',v:m.person}:null,
+    m.phone?{l:'연락처',v:`<a href="tel:${m.phone}" style="color:var(--accent)">${m.phone}</a>`}:null,
+    m.content?{l:'내용',v:m.content.replace(/\n/g,'<br>')}:null,
+    (m.tags&&m.tags.length)?{l:'태그',v:m.tags.map(tag=>{const {bg,fg}=tagColor(tag);return`<span style="background:${bg};color:${fg};padding:2px 8px;border-radius:8px;font-size:12px;font-weight:500;margin-right:4px">${tag}</span>`;}).join('')}:null,
+  ].filter(Boolean);
+  rows.forEach(r=>html+=`<div class="mdetail-sec"><div class="mdetail-label">${r.l}</div><div class="mdetail-val">${r.v}</div></div>`);
+  document.getElementById('content').innerHTML=html;
+}
+function backToMemo(){switchTab('memo');}
+
 function setMTypeF(f){S.mTypeF=f;render();}
 function setMTagF(f){S.mTagF=f;render();}
 function confirmDeleteMemo(idx){
   showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
-    <div class="modal-handle"></div>
-    <div class="modal-title">메모 삭제</div>
+    <div class="modal-handle"></div><div class="modal-title">메모 삭제</div>
     <p style="font-size:14px;color:var(--text2);margin-bottom:20px">이 메모를 삭제할까요?</p>
     <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-danger" onclick="deleteMemo(${idx})">삭제</button></div>
   </div></div>`);
 }
-function deleteMemo(idx){memos.splice(idx,1);saveAll();closeModal();render();}
+function deleteMemo(idx){memos.splice(idx,1);saveAll();closeModal();switchTab('memo');}
 
 function renderTagSelector(selected){
   return`<div class="tag-sel" id="tag-sel">${customTags.map(t=>{const {bg,fg}=tagColor(t);const on=selected.includes(t);return`<button class="tsel-btn${on?' on':''}" style="${on?`background:${bg};color:${fg};border-color:${fg}`:''}" onclick="toggleTagSel(this,'${t}')">${t}</button>`;}).join('')}</div>
-  <div class="ctag-row"><input type="text" id="new-tag-input" placeholder="새 태그 입력..."><button onclick="addCustomTag()"><i class="ti ti-plus"></i> 추가</button></div>`;
+  <div class="ctag-row"><input type="text" id="new-tag-input" placeholder="새 태그 입력..."><button onclick="addCustomTag()"><i class="ti ti-plus"></i> 추가</button></div>
+  <button class="tag-manage-btn" onclick="openTagManager()"><i class="ti ti-settings" style="font-size:13px"></i> 태그 관리 (수정 / 삭제)</button>`;
 }
 function toggleTagSel(btn,tag){btn.classList.toggle('on');const {bg,fg}=tagColor(tag);if(btn.classList.contains('on')){btn.style.background=bg;btn.style.color=fg;btn.style.borderColor=fg;}else{btn.style.background='';btn.style.color='';btn.style.borderColor='';}}
 function addCustomTag(){const inp=document.getElementById('new-tag-input'),val=inp.value.trim();if(!val||customTags.includes(val))return;customTags.push(val);saveAll();const sel=document.getElementById('tag-sel'),{bg,fg}=tagColor(val);const btn=document.createElement('button');btn.className='tsel-btn on';btn.style.background=bg;btn.style.color=fg;btn.style.borderColor=fg;btn.setAttribute('onclick',`toggleTagSel(this,'${val}')`);btn.textContent=val;sel.appendChild(btn);inp.value='';}
 function getSelectedTags(){return[...document.querySelectorAll('.tsel-btn.on')].map(b=>b.textContent);}
 
+function openTagManager(){renderTagManagerModal(-1);}
+function renderTagManagerModal(editingIdx){
+  const rows=customTags.map((t,i)=>{
+    const {bg,fg}=tagColor(t);
+    if(i===editingIdx)return`<div class="tag-edit-row"><input type="text" id="tag-edit-input" value="${t}" maxlength="10"><button class="tag-edit-save" onclick="saveTagEdit(${i})">저장</button><button class="tag-edit-cancel" onclick="renderTagManagerModal(-1)">취소</button></div>`;
+    return`<div class="tag-manage-row"><span class="tag-manage-pill" style="background:${bg};color:${fg}">${t}</span><button class="tag-manage-edit" onclick="renderTagManagerModal(${i})"><i class="ti ti-pencil"></i> 수정</button><button class="tag-manage-del" onclick="confirmDeleteTag(${i})"><i class="ti ti-trash"></i></button></div>`;
+  }).join('');
+  showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
+    <div class="modal-handle"></div><div class="modal-title">태그 관리</div>
+    <div style="max-height:60vh;overflow-y:auto">${rows||'<div style="text-align:center;padding:20px;color:var(--text3);font-size:13px">등록된 태그가 없어요</div>'}</div>
+    <div class="mactions" style="margin-top:16px"><button class="btn-c" onclick="closeModal()">닫기</button></div>
+  </div></div>`);
+}
+function saveTagEdit(i){const val=document.getElementById('tag-edit-input').value.trim();if(!val)return;if(customTags.includes(val)&&customTags[i]!==val){alert('이미 존재하는 태그예요.');return;}const oldTag=customTags[i];customTags[i]=val;memos.forEach(m=>{if(m.tags){const ti=m.tags.indexOf(oldTag);if(ti>=0)m.tags[ti]=val;}});saveAll();renderTagManagerModal(-1);}
+function confirmDeleteTag(i){const tag=customTags[i];const usedCount=memos.filter(m=>m.tags&&m.tags.includes(tag)).length;showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-handle"></div><div class="modal-title">태그 삭제</div><p style="font-size:14px;color:var(--text2);margin-bottom:${usedCount?'8px':'20px'}">'${tag}' 태그를 삭제할까요?</p>${usedCount?`<p style="font-size:12px;color:#E24B4A;margin-bottom:20px">${usedCount}개 메모에서 이 태그가 제거돼요.</p>`:''}<div class="mactions"><button class="btn-c" onclick="openTagManager()">취소</button><button class="btn-danger" onclick="deleteTag(${i})">삭제</button></div></div></div>`);}
+function deleteTag(i){const tag=customTags[i];customTags.splice(i,1);memos.forEach(m=>{if(m.tags)m.tags=m.tags.filter(t=>t!==tag);});saveAll();openTagManager();}
+
 function showModal(html){document.getElementById('modal-area').innerHTML=html;}
 function closeModal(){document.getElementById('modal-area').innerHTML='';}
 
-function openAddMemo(){showMemoModal(-1,{type:'통화',date:TODAY,person:'',phone:'',content:'',tags:[]});}
+function openAddMemo(){showMemoModal(-1,{type:'통화',date:TODAY,thumbnail:'',person:'',phone:'',content:'',tags:[]});}
 function editMemo(idx){showMemoModal(idx,memos[idx]);}
 function showMemoModal(idx,m){
   showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
     <div class="modal-handle"></div>
     <div class="modal-title">${idx<0?'메모 추가':'메모 수정'}</div>
+    <div class="mf"><div class="mf-label">썸네일 <span style="color:var(--text3);font-weight:400">(목록에 표시되는 제목)</span></div><input type="text" id="mm-thumb" value="${m.thumbnail||''}" placeholder="예: 김팀장 통화, 예산 지시" maxlength="20"></div>
     <div class="mf"><div class="mf-label">구분</div><select id="mm-type"><option value="통화"${m.type==='통화'?' selected':''}>통화</option><option value="지시"${m.type==='지시'?' selected':''}>지시</option><option value="기타"${m.type==='기타'?' selected':''}>기타</option></select></div>
     <div class="mf"><div class="mf-label">날짜</div><input type="date" id="mm-date" value="${m.date}"></div>
     <div class="mf"><div class="mf-label">상대방</div><input type="text" id="mm-person" value="${m.person||''}" placeholder="이름 / 소속"></div>
@@ -485,26 +614,30 @@ function showMemoModal(idx,m){
   </div></div>`);
 }
 function saveMemo(idx){
-  const obj={type:document.getElementById('mm-type').value,date:document.getElementById('mm-date').value,person:document.getElementById('mm-person').value.trim(),phone:document.getElementById('mm-phone').value.trim(),content:document.getElementById('mm-content').value.trim(),tags:getSelectedTags()};
-  if(!obj.content&&!obj.person)return;
+  const obj={thumbnail:document.getElementById('mm-thumb').value.trim(),type:document.getElementById('mm-type').value,date:document.getElementById('mm-date').value,person:document.getElementById('mm-person').value.trim(),phone:document.getElementById('mm-phone').value.trim(),content:document.getElementById('mm-content').value.trim(),tags:getSelectedTags()};
+  if(!obj.content&&!obj.person&&!obj.thumbnail)return;
   if(idx<0)memos.unshift(obj);else memos[idx]=obj;
-  saveAll();closeModal();render();
+  saveAll();closeModal();
+  if(S.tab==='memodetail'){S.memoDetailIdx=idx<0?0:idx;renderMemoDetail();}else render();
 }
 
 function openAddTask(date){
   showModal(`<div class="modal-ov" onclick="if(event.target===this)closeModal()"><div class="modal-box">
     <div class="modal-handle"></div>
     <div class="modal-title">업무 추가 (${date.slice(5).replace('-','/')})</div>
+    <div class="mf"><div class="mf-label">썸네일 <span style="color:var(--text3);font-weight:400">(캘린더에 표시, 최대 6자)</span></div><input type="text" id="mt-thumb" placeholder="예: 경평보고, 세무조사" maxlength="6"></div>
     <div class="mf"><div class="mf-label">업무 내용</div><textarea id="mt-content" placeholder="업무 내용을 입력하세요..."></textarea></div>
     <div class="mf"><div class="mf-label">구분</div><select id="mt-type"><option value="normal">일반</option><option value="urgent">★ 마감/중요</option><option value="meeting">회의/출장</option></select></div>
     <div class="mactions"><button class="btn-c" onclick="closeModal()">취소</button><button class="btn-s" onclick="saveNewTask('${date}')">저장</button></div>
   </div></div>`);
 }
 function saveNewTask(date){
-  const content=document.getElementById('mt-content').value.trim(),type=document.getElementById('mt-type').value;
+  const thumb=document.getElementById('mt-thumb').value.trim();
+  const content=document.getElementById('mt-content').value.trim();
+  const type=document.getElementById('mt-type').value;
   if(!content)return;
   if(!userTasks[date])userTasks[date]=[];
-  userTasks[date].push({text:content,type});
+  userTasks[date].push({text:content,type,thumbnail:thumb||content.slice(0,6)});
   saveAll();closeModal();render();
 }
 
