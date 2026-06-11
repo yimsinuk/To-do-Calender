@@ -337,35 +337,41 @@ function deleteTask(ds,idx){
 function backToMonth(){S.tab='month';document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',i===0));render();}
 function goToWeekOf(ds){
   const d=new Date(ds+' 00:00:00'),td=new Date(TODAY+' 00:00:00');
-  const mon=new Date(d);mon.setDate(d.getDate()-((d.getDay()+6)%7));
-  const tmon=new Date(td);tmon.setDate(td.getDate()-((td.getDay()+6)%7));
-  S.weekOffset=Math.round((mon-tmon)/(7*86400000));
+  const sun=new Date(d);sun.setDate(d.getDate()-d.getDay());
+  const tsun=new Date(td);tsun.setDate(td.getDate()-td.getDay());
+  S.weekOffset=Math.round((sun-tsun)/(7*86400000));
   S.tab='week';document.querySelectorAll('.nav-tab').forEach((el,i)=>el.classList.toggle('active',i===1));render();
 }
 
 function getWeekDates(offset){
-  const base=new Date(TODAY+' 00:00:00'),dow=(base.getDay()+6)%7,mon=new Date(base);
-  mon.setDate(base.getDate()-dow+offset*7);
-  return Array.from({length:5},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d.toISOString().split('T')[0];});
+  const base=new Date(TODAY+' 00:00:00');
+  const dow=base.getDay(); // 0=일, 6=토
+  const sun=new Date(base);
+  sun.setDate(base.getDate()-dow+offset*7);
+  return Array.from({length:7},(_,i)=>{const d=new Date(sun);d.setDate(sun.getDate()+i);return d.toISOString().split('T')[0];});
 }
 
 function renderWeekView(){
   const dates=getWeekDates(S.weekOffset);
-  const s=dates[0].slice(5).replace('-','/'),e=dates[4].slice(5).replace('-','/');
-  const WN=['월','화','수','목','금'];
+  const s=dates[0].slice(5).replace('-','/'),e=dates[6].slice(5).replace('-','/');
   let html=`<div class="week-nav">
     <button class="cnbtn" onclick="changeWeek(-1)"><i class="ti ti-chevron-left"></i></button>
     <span class="week-label">${s} – ${e}</span>
     <button class="cnbtn" onclick="changeWeek(1)"><i class="ti ti-chevron-right"></i></button>
   </div>`;
-  dates.forEach((date,i)=>{
+  dates.forEach((date)=>{
     const tasks=getAllTasks(date);
-    const dNum=new Date(date+' 00:00:00').getDate();
+    const d=new Date(date+' 00:00:00');
+    const dNum=d.getDate();
+    const dow2=d.getDay();
+    const dayName=DAY_NAMES[dow2];
     const isToday=date===TODAY;
+    const isSun=dow2===0, isSat=dow2===6;
+    const nameColor=isSun?'#E24B4A':isSat?'#378ADD':'var(--text)';
     html+=`<div class="dcard"><div class="dcard-hd" onclick="toggleDayCard(this)">
-      <div class="dnum" style="background:${isToday?'var(--accent-bg)':'var(--bg2)'};color:${isToday?'var(--accent)':'var(--text)'}">${dNum}</div>
+      <div class="dnum" style="background:${isToday?'var(--accent-bg)':isSun?'#FEF0EF':isSat?'#EEF4FD':'var(--bg2)'};color:${isToday?'var(--accent)':nameColor}">${dNum}</div>
       <div class="dcard-info">
-        <div class="dcard-name">${WN[i]}요일${isToday?'<span class="today-badge">오늘</span>':''}</div>
+        <div class="dcard-name" style="color:${nameColor}">${dayName}요일${isToday?'<span class="today-badge">오늘</span>':''}</div>
         <div class="dcard-cnt">${tasks.length}개 업무</div>
       </div>
       <i class="ti ti-chevron-down" style="font-size:15px;color:var(--text3);transition:transform .2s;${isToday?'transform:rotate(180deg)':''}"></i>
