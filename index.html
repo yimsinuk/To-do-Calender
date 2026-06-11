@@ -449,8 +449,12 @@ function renderTimeline(){
         <div class="tl-proj-top">
           <div class="tl-pdot" style="background:${p.color}"></div>
           <span class="tl-pname">${p.name}</span>
-          <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:2px 4px;" onclick="event.stopPropagation();confirmDeleteProject(${pi})"><i class="ti ti-trash"></i></button>
-          <i class="ti ti-chevron-down tl-pchev" style="${open?'transform:rotate(180deg)':''}"></i>
+          <div style="display:flex;align-items:center;gap:2px;margin-left:auto">
+            <button style="background:none;border:0.5px solid var(--border2);border-radius:6px;cursor:pointer;color:var(--text2);font-size:13px;padding:3px 7px;line-height:1;${pi===0?'opacity:.3;pointer-events:none':''}" onclick="event.stopPropagation();moveProject(${pi},-1)" aria-label="위로"><i class="ti ti-chevron-up"></i></button>
+            <button style="background:none;border:0.5px solid var(--border2);border-radius:6px;cursor:pointer;color:var(--text2);font-size:13px;padding:3px 7px;line-height:1;${pi===projects.length-1?'opacity:.3;pointer-events:none':''}" onclick="event.stopPropagation();moveProject(${pi},1)" aria-label="아래로"><i class="ti ti-chevron-down"></i></button>
+            <button style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:14px;padding:3px 5px;" onclick="event.stopPropagation();confirmDeleteProject(${pi})"><i class="ti ti-trash"></i></button>
+          </div>
+          <i class="ti ti-chevron-right tl-pchev" style="transition:transform .2s;${open?'transform:rotate(90deg)':''}"></i>
         </div>
         <div class="tl-visual">
           <div class="tl-donut-wrap">${donut}<div class="tl-donut-pct">${pct}%</div></div>
@@ -474,6 +478,12 @@ function renderTimeline(){
   return html+`<button class="tlnew" onclick="openAddProject()"><i class="ti ti-plus"></i> 프로젝트 추가</button></div>`;
 }
 
+function moveProject(pi,dir){
+  const ni=pi+dir;
+  if(ni<0||ni>=projects.length)return;
+  [projects[pi],projects[ni]]=[projects[ni],projects[pi]];
+  saveAll();render();
+}
 function toggleProject(id){S.tlOpen[id]=!S.tlOpen[id];render();}
 function cycleStatus(pi,ti){const o=['ready','prep','wip','done'];projects[pi].tasks[ti].status=o[(o.indexOf(projects[pi].tasks[ti].status)+1)%4];saveAll();render();}
 function deleteTlTask(pi,ti){projects[pi].tasks.splice(ti,1);saveAll();render();}
